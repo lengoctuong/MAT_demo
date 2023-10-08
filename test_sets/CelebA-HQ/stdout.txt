@@ -1,0 +1,22 @@
+Loading data from: test_sets/CelebA-HQ/images
+Loading mask from: test_sets/CelebA-HQ/masks
+Loading networks from: pretrained/CelebA-HQ_512.pkl
+Prcessing: 1.png
+Setting up PyTorch plugin "bias_act_plugin"... Done.
+Setting up PyTorch plugin "upfirdn2d_plugin"... Done.
+Prcessing: 10.png
+Prcessing: 11.png
+Prcessing: 12.png
+Prcessing: 13.png
+Prcessing: 14.png
+Prcessing: 15.png
+Prcessing: 2.png
+Prcessing: 3.png
+Prcessing: 4.png
+Prcessing: 5.png
+Prcessing: 6.png
+Prcessing: 7.png
+Prcessing: 8.png
+Prcessing: 9.png
+Prcessing: test1.png
+Prcessing: test2.png
