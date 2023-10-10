@@ -1,7 +1,10 @@
+# Data / model
 Data/CelebA-HQ/
-Pre-trained
+pretrained
 Results/
 saved_model/
+output_path/
+*.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
