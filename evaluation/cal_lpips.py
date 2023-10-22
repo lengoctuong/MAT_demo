@@ -53,6 +53,11 @@ def calculate_metrics(folder1, folder2):
 
             img1 = read_image(fpath1).to(device)
             img2 = read_image(fpath2).to(device)
+
+            # Case: img with 4 channels
+            if img2.shape == (1, 4, 512, 512):
+                img2 = img2[:, :-1, ...]
+                
             assert img1.shape == img2.shape, 'Illegal shape'
             lpips_l.append(loss_fn(img1, img2).mean().cpu().numpy())
 

@@ -9,6 +9,11 @@ import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 
+# Add abs path for the torch_utils library from this github
+import os
+path = os.path.abspath('/root/MAT')
+sys.path.append(path)
+
 from torch_utils import misc
 from torch_utils import persistence
 from networks.basic_module import FullyConnectedLayer, Conv2dLayer, MappingNet, MinibatchStdLayer, DisFromRGB, DisBlock, StyleConv, ToRGB, get_style_code

@@ -1,3 +1,17 @@
+**Env torch+cuda**
+```bash
+conda install pytorch torchvision cudatoolkit -c pytorch
+``````
+
+**Changed Code**
+- ```generate_image.py```
+    - Save mask (without mpath).
+    - Add agrs: large-mask, hole-lrange, hole-rrange, seed. And codes based those.
+- ```evaluation/cal_fid_pids_uids.py```, ```evaluation/cal_lpips.py```, ```evaluation/cal_psnr_ssim_l1.py```
+    - Add case: convert 4 channels to RGB.
+- ```networks/mat.py```
+    - Add abs path for the torch_utils library.
+
 **Quick Test**
 ```bash
 CUDA_VISIBLE_DEVICES=2 python generate_image.py --network pretrained/CelebA-HQ_512.pkl --dpath test_sets/CelebA-HQ/images --mpath test_sets/CelebA-HQ/masks --outdir test_sets/CelebA-HQ/samples > test_sets/CelebA-HQ/stdout.txt 2> test_sets/CelebA-HQ/stderr.txt

@@ -84,6 +84,11 @@ def calculate_metrics(folder1, folder2):
 
         img1 = read_image(fpath1).astype(np.float64)
         img2 = read_image(fpath2).astype(np.float64)
+
+        # Case: img with 4 channels
+        if img2.shape == (512, 512, 4):
+            img2 = img2[..., :-1]
+
         assert img1.shape == img2.shape, 'Illegal shape'
         psnr_l.append(calculate_psnr(img1, img2))
         ssim_l.append(calculate_ssim(img1, img2))

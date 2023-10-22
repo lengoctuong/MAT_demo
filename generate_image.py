@@ -23,7 +23,8 @@ import torch
 import torch.nn.functional as F
 
 import legacy
-from datasets.mask_generator_512 import RandomMask
+# from datasets.mask_generator_512 import RandomMask
+from datasets import mask_generator_512, mask_generator_512_small
 from networks.mat import Generator
 
 
@@ -67,6 +68,10 @@ def named_params_and_buffers(module):
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
 @click.option('--outdir', help='Where to save the output images', type=str, required=True, metavar='DIR')
+@click.option('--large-mask', help='whether mask is large', type=bool, default=True, show_default=True)
+@click.option('--hole-lrange', help='the left range of mask, from 0 to 1', type=float, default=0, show_default=1)
+@click.option('--hole-rrange', help='the right range of mask, from 0 to 1', type=float, default=1, show_default=1)
+@click.option('--seed', help='the random number, None for non-seed', type=str, default='None', show_default='None')
 def generate_images(
     ctx: click.Context,
     network_pkl: str,
@@ -76,15 +81,22 @@ def generate_images(
     truncation_psi: float,
     noise_mode: str,
     outdir: str,
+    large_mask: bool,
+    hole_lrange: float,
+    hole_rrange: float,
+    seed: str,
 ):
     """
     Generate images using pretrained network pickle.
     """
-    seed = 240  # pick up a random number
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
+    # seed for randoms
+    if seed != 'None':    
+        seed = int(seed)
+        # seed = 240  # pick up a random number
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
 
     print(f'Loading data from: {dpath}')
     img_list = sorted(glob.glob(dpath + '/*.png') + glob.glob(dpath + '/*.jpg'))
@@ -142,7 +154,18 @@ def generate_images(
                 mask = cv2.imread(mask_list[i], cv2.IMREAD_GRAYSCALE).astype(np.float32) / 255.0
                 mask = torch.from_numpy(mask).float().to(device).unsqueeze(0).unsqueeze(0)
             else:
-                mask = RandomMask(resolution) # adjust the masking ratio by using 'hole_range'
+                # mask = RandomMask(resolution) # adjust the masking ratio by using 'hole_range'
+
+                # Create large or small mask
+                if large_mask == True:
+                    mask = mask_generator_512.RandomMask(resolution, [hole_lrange, hole_rrange]) # adjust the masking ratio by using 'hole_range'
+                else:
+                    mask = mask_generator_512_small.RandomMask(resolution, [hole_lrange, hole_rrange]) # adjust the masking ratio by using 'hole_range'
+
+                # Save mask
+                import matplotlib.image as mpimg
+                mpimg.imsave('test_sets/CelebA-HQ/masks3/' + ipath.split('/')[-1], mask[0], cmap='gray')
+
                 mask = torch.from_numpy(mask).float().to(device).unsqueeze(0)
 
             z = torch.from_numpy(np.random.randn(1, G.z_dim)).to(device)
