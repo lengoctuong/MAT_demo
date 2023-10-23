@@ -164,7 +164,7 @@ def generate_images(
 
                 # Save mask
                 import matplotlib.image as mpimg
-                mpimg.imsave('test_sets/CelebA-HQ/masks3/' + ipath.split('/')[-1], mask[0], cmap='gray')
+                mpimg.imsave('test_sets/CelebA-HQ/' + ipath.split('/')[-2].replace('images', 'masks') + '/' + ipath.split('/')[-1], mask[0], cmap='gray')
 
                 mask = torch.from_numpy(mask).float().to(device).unsqueeze(0)
 

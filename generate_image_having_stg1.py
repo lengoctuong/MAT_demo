@@ -165,26 +165,26 @@ def generate_images(
                     mask = mask_generator_512_small.RandomMask(resolution, [hole_lrange, hole_rrange]) # adjust the masking ratio by using 'hole_range'
 
                 # Save mask
-                # import matplotlib.image as mpimg
-                # mpimg.imsave('test_sets/CelebA-HQ/masks3/' + ipath.split('/')[-1], mask[0], cmap='gray')
+                import matplotlib.image as mpimg
+                mpimg.imsave('test_sets/CelebA-HQ/' + ipath.split('/')[-2].replace('images', 'masks') + '/' + ipath.split('/')[-1], mask[0], cmap='gray')
 
                 mask = torch.from_numpy(mask).float().to(device).unsqueeze(0)
 
             z = torch.from_numpy(np.random.randn(1, G.z_dim)).to(device)
             output, output_stg1 = G(image, mask, z, label, truncation_psi=truncation_psi, noise_mode=noise_mode, return_stg1=True)
 
-            # Score by Dicriminator
+            # Score by Dicriminator and save output stage 1
             score, score_stg1 = _D(output, mask, output_stg1, None)
-            # print('output shape of D:', score.shape, score_stg1.shape)
-            print('output of D:', score[0][0], score_stg1[0][0])
-
-            output = (output.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
-            output = output[0].cpu().numpy()
-            PIL.Image.fromarray(output, 'RGB').save(f'{outdir}/{iname}')
+            # print('output shape of D:', score_stg1.shape, score.shape)
+            print('output of D:', score_stg1[0][0], score[0][0])
 
             output_stg1 = (output_stg1.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
             output_stg1 = output_stg1[0].cpu().numpy()
             PIL.Image.fromarray(output_stg1, 'RGB').save(f'{outdir}_stg1/{iname}')
+
+            output = (output.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
+            output = output[0].cpu().numpy()
+            PIL.Image.fromarray(output, 'RGB').save(f'{outdir}/{iname}')
 
 
 if __name__ == "__main__":
