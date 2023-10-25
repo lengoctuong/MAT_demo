@@ -67,11 +67,13 @@ def named_params_and_buffers(module):
 @click.option('--resolution', type=int, help='resolution of input image', default=512, show_default=True)
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--noise-mode', help='Noise mode', type=click.Choice(['const', 'random', 'none']), default='const', show_default=True)
+@click.option('--maskdir', help='Where to save the random masks', type=str, metavar='DIR')
 @click.option('--outdir', help='Where to save the output images', type=str, required=True, metavar='DIR')
+@click.option('--out1dir', help='Where to save the stage 1 output images', type=str, metavar='DIR')
 @click.option('--large-mask', help='whether mask is large', type=bool, default=True, show_default=True)
 @click.option('--hole-lrange', help='the left range of mask, from 0 to 1', type=float, default=0, show_default=1)
 @click.option('--hole-rrange', help='the right range of mask, from 0 to 1', type=float, default=1, show_default=1)
-@click.option('--seed', help='the random number, None for non-seed', type=str, default='None', show_default='None')
+@click.option('--seed', help='the random number', type=int)
 def generate_images(
     ctx: click.Context,
     network_pkl: str,
@@ -80,7 +82,9 @@ def generate_images(
     resolution: int,
     truncation_psi: float,
     noise_mode: str,
+    maskdir: str,
     outdir: str,
+    out1dir: str,
     large_mask: bool,
     hole_lrange: float,
     hole_rrange: float,
@@ -90,7 +94,7 @@ def generate_images(
     Generate images using pretrained network pickle.
     """
     # seed for randoms
-    if seed != 'None':    
+    if seed != None:
         seed = int(seed)
         # seed = 240  # pick up a random number
         random.seed(seed)
@@ -146,9 +150,13 @@ def generate_images(
     if resolution != 512:
         noise_mode = 'random'
     with torch.no_grad():
+        # Process
+        pre_percent = 0
+        percent_show_unit = len(img_list) / 100
+
         for i, ipath in enumerate(img_list):
             iname = os.path.basename(ipath).replace('.jpg', '.png')
-            print(f'Prcessing: {iname}')
+            # print(f'Prcessing: {iname}')
             image = read_image(ipath)
             image = (torch.from_numpy(image).float().to(device) / 127.5 - 1).unsqueeze(0)
 
@@ -165,8 +173,9 @@ def generate_images(
                     mask = mask_generator_512_small.RandomMask(resolution, [hole_lrange, hole_rrange]) # adjust the masking ratio by using 'hole_range'
 
                 # Save mask
-                import matplotlib.image as mpimg
-                mpimg.imsave('test_sets/CelebA-HQ/' + ipath.split('/')[-2].replace('images', 'masks') + '/' + ipath.split('/')[-1], mask[0], cmap='gray')
+                if maskdir != None:
+                    import matplotlib.image as mpimg
+                    mpimg.imsave(f'{maskdir}/{iname}', mask[0], cmap='gray')
 
                 mask = torch.from_numpy(mask).float().to(device).unsqueeze(0)
 
@@ -176,15 +185,25 @@ def generate_images(
             # Score by Dicriminator and save output stage 1
             score, score_stg1 = _D(output, mask, output_stg1, None)
             # print('output shape of D:', score_stg1.shape, score.shape)
-            print('output of D:', score_stg1[0][0], score[0][0])
+            # print('output of D: stg1:', score_stg1[0][0].item(), 'final:', score[0][0].item())
 
-            output_stg1 = (output_stg1.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
-            output_stg1 = output_stg1[0].cpu().numpy()
-            PIL.Image.fromarray(output_stg1, 'RGB').save(f'{outdir}_stg1/{iname}')
+            if out1dir != None:
+                output_stg1 = (output_stg1.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
+                output_stg1 = output_stg1[0].cpu().numpy()
+                PIL.Image.fromarray(output_stg1, 'RGB').save(f'{out1dir}/{iname}')
 
             output = (output.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
             output = output[0].cpu().numpy()
             PIL.Image.fromarray(output, 'RGB').save(f'{outdir}/{iname}')
+
+            # Notify process
+            cur_percent = (i + 1)/len(img_list)*100
+            if percent_show_unit >= 1:
+                if cur_percent - pre_percent >= 1 or cur_percent == 100:
+                    print('>>>>> ' + str(cur_percent) + '%')
+                    pre_percent = (i + 1)/len(img_list)*100
+            else:
+                print('>>>>> ' + str(cur_percent) + '%')
 
 
 if __name__ == "__main__":

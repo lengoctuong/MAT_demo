@@ -1,7 +1,10 @@
 # Data / model
-Data/CelebA-HQ/
-pretrained
+Data/
+!Data/CelebA-HQ/val_img_names.txt
 Results/
+!Results/evaluating_results.md
+Masks_val/
+pretrained/
 saved_model/
 output_path/
 *.pkl
