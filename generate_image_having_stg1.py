@@ -183,9 +183,22 @@ def generate_images(
             output, output_stg1 = G(image, mask, z, label, truncation_psi=truncation_psi, noise_mode=noise_mode, return_stg1=True)
 
             # Score by Dicriminator and save output stage 1
-            score, score_stg1 = _D(output, mask, output_stg1, None)
+            # score, score_stg1 = _D(output, mask, output_stg1, None)
             # print('output shape of D:', score_stg1.shape, score.shape)
             # print('output of D: stg1:', score_stg1[0][0].item(), 'final:', score[0][0].item())
+
+            # Notify process
+            cur_percent = (i + 1)/len(img_list)*100
+            if percent_show_unit >= 1:
+                if cur_percent - pre_percent >= 1 or cur_percent == 100:
+                    score, score_stg1 = _D(output, mask, output_stg1, None)
+                    print('----- D[stg1] =', score_stg1[0][0].item(), '~~~ D[final] =', score[0][0].item())
+                    print('>>>>> ' + str(cur_percent) + '%')
+                    pre_percent = (i + 1)/len(img_list)*100
+            else:
+                score, score_stg1 = _D(output, mask, output_stg1, None)
+                print('----- D[stg1] =', score_stg1[0][0].item(), '~~~ D[final] =', score[0][0].item())
+                print('>>>>> ' + str(cur_percent) + '%')
 
             if out1dir != None:
                 output_stg1 = (output_stg1.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
@@ -195,15 +208,6 @@ def generate_images(
             output = (output.permute(0, 2, 3, 1) * 127.5 + 127.5).round().clamp(0, 255).to(torch.uint8)
             output = output[0].cpu().numpy()
             PIL.Image.fromarray(output, 'RGB').save(f'{outdir}/{iname}')
-
-            # Notify process
-            cur_percent = (i + 1)/len(img_list)*100
-            if percent_show_unit >= 1:
-                if cur_percent - pre_percent >= 1 or cur_percent == 100:
-                    print('>>>>> ' + str(cur_percent) + '%')
-                    pre_percent = (i + 1)/len(img_list)*100
-            else:
-                print('>>>>> ' + str(cur_percent) + '%')
 
 
 if __name__ == "__main__":

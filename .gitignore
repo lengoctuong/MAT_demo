@@ -1,11 +1,14 @@
 # Data / model
 Data/
-\Data/CelebA-HQ/val_img_names.txt
+!/root/MAT/Data/CelebA-HQ/val_img_names.txt
+!Data/CelebA-HQ/val_img_names.txt
 Results/
-\Results/evaluating_results.md
+!/root/MAT/Results/evaluating_results.md
+!Results/evaluating_results.md
 Masks_val/
 pretrained/
 saved_model/
+saved_model_1024/
 output_path/
 *.pkl
 

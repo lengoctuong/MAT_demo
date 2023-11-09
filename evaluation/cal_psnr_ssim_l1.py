@@ -76,7 +76,8 @@ def calculate_metrics(folder1, folder2):
 
     psnr_l, ssim_l, dl1_l = [], [], []
     for i, (fpath1, fpath2) in tqdm(enumerate(zip(l1, l2)), total=len(l1)):
-        # print(i)
+    # for i, (fpath1, fpath2) in enumerate(zip(l1, l2)):
+    #     print(i)
         _, name1 = os.path.split(fpath1)
         _, name2 = os.path.split(fpath2)
         name1 = name1.split('.')[0]
