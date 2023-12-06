@@ -1,0 +1,319 @@
+Generator(
+  (synthesis): SynthesisNet(
+    (first_stage): FirstStage(
+      (detect_parts): ...(
+          ...
+      )
+      (conv_first): Conv2dLayerPartial(
+        (conv): Conv2dLayer()
+      )
+      (enc_conv): ModuleList(
+        (0-2): 3 x Conv2dLayerPartial(
+          (conv): Conv2dLayer()
+        )
+      )
+      (tran): ModuleList(
+        (0): BasicLayer(
+          (blocks): ModuleList(
+            (0-1): 2 x SwinTransformerBlock(
+              (attn): WindowAttention(
+                (q): FullyConnectedLayer()
+                (k): FullyConnectedLayer()
+                (v): FullyConnectedLayer()
+                (proj): FullyConnectedLayer()
+                (softmax): Softmax(dim=-1)
+              )
+              (fuse): FullyConnectedLayer()
+              (mlp): Mlp(
+                (fc1): FullyConnectedLayer()
+                (fc2): FullyConnectedLayer()
+              )
+            )
+          )
+          (conv): Conv2dLayerPartial(
+            (conv): Conv2dLayer()
+          )
+        )
+        (1): BasicLayer(
+          (downsample): PatchMerging(
+            (conv): Conv2dLayerPartial(
+              (conv): Conv2dLayer()
+            )
+          )
+          (blocks): ModuleList(
+            (0-2): 3 x SwinTransformerBlock(
+              (attn): WindowAttention(
+                (q): FullyConnectedLayer()
+                (k): FullyConnectedLayer()
+                (v): FullyConnectedLayer()
+                (proj): FullyConnectedLayer()
+                (softmax): Softmax(dim=-1)
+              )
+              (fuse): FullyConnectedLayer()
+              (mlp): Mlp(
+                (fc1): FullyConnectedLayer()
+                (fc2): FullyConnectedLayer()
+              )
+            )
+          )
+          (conv): Conv2dLayerPartial(
+            (conv): Conv2dLayer()
+          )
+        )
+        (2): BasicLayer(
+          (downsample): PatchMerging(
+            (conv): Conv2dLayerPartial(
+              (conv): Conv2dLayer()
+            )
+          )
+          (blocks): ModuleList(
+            (0-3): 4 x SwinTransformerBlock(
+              (attn): WindowAttention(
+                (q): FullyConnectedLayer()
+                (k): FullyConnectedLayer()
+                (v): FullyConnectedLayer()
+                (proj): FullyConnectedLayer()
+                (softmax): Softmax(dim=-1)
+              )
+              (fuse): FullyConnectedLayer()
+              (mlp): Mlp(
+                (fc1): FullyConnectedLayer()
+                (fc2): FullyConnectedLayer()
+              )
+            )
+          )
+          (conv): Conv2dLayerPartial(
+            (conv): Conv2dLayer()
+          )
+        )
+        (3): BasicLayer(
+          (downsample): PatchUpsampling(
+            (conv): Conv2dLayerPartial(
+              (conv): Conv2dLayer()
+            )
+          )
+          (blocks): ModuleList(
+            (0-2): 3 x SwinTransformerBlock(
+              (attn): WindowAttention(
+                (q): FullyConnectedLayer()
+                (k): FullyConnectedLayer()
+                (v): FullyConnectedLayer()
+                (proj): FullyConnectedLayer()
+                (softmax): Softmax(dim=-1)
+              )
+              (fuse): FullyConnectedLayer()
+              (mlp): Mlp(
+                (fc1): FullyConnectedLayer()
+                (fc2): FullyConnectedLayer()
+              )
+            )
+          )
+          (conv): Conv2dLayerPartial(
+            (conv): Conv2dLayer()
+          )
+        )
+        (4): BasicLayer(
+          (downsample): PatchUpsampling(
+            (conv): Conv2dLayerPartial(
+              (conv): Conv2dLayer()
+            )
+          )
+          (blocks): ModuleList(
+            (0-1): 2 x SwinTransformerBlock(
+              (attn): WindowAttention(
+                (q): FullyConnectedLayer()
+                (k): FullyConnectedLayer()
+                (v): FullyConnectedLayer()
+                (proj): FullyConnectedLayer()
+                (softmax): Softmax(dim=-1)
+              )
+              (fuse): FullyConnectedLayer()
+              (mlp): Mlp(
+                (fc1): FullyConnectedLayer()
+                (fc2): FullyConnectedLayer()
+              )
+            )
+          )
+          (conv): Conv2dLayerPartial(
+            (conv): Conv2dLayer()
+          )
+        )
+      )
+      (down_conv): Sequential(
+        (0): Conv2dLayer()
+        (1): Conv2dLayer()
+        (2): Conv2dLayer()
+        (3): Conv2dLayer()
+        (4): AdaptiveAvgPool2d(output_size=(1, 1))
+      )
+      (to_style): FullyConnectedLayer()
+      (ws_style): FullyConnectedLayer()
+      (to_square): FullyConnectedLayer()
+      (dec_conv): ModuleList(
+        (0-2): 3 x DecStyleBlock(
+          (conv0): StyleConv(
+            (conv): ModulatedConv2d(
+              (affine): FullyConnectedLayer()
+            )
+          )
+          (conv1): StyleConv(
+            (conv): ModulatedConv2d(
+              (affine): FullyConnectedLayer()
+            )
+          )
+          (toRGB): ToRGB(
+            (conv): ModulatedConv2d(
+              (affine): FullyConnectedLayer()
+            )
+          )
+        )
+      )
+    )
+    (enc): Encoder(
+      (EncConv_Block_512x512): EncFromRGB(
+        (conv0): Conv2dLayer()
+        (conv1): Conv2dLayer()
+      )
+      (EncConv_Block_256x256): ConvBlockDown(
+        (conv0): Conv2dLayer()
+        (conv1): Conv2dLayer()
+      )
+      (EncConv_Block_128x128): ConvBlockDown(
+        (conv0): Conv2dLayer()
+        (conv1): Conv2dLayer()
+      )
+      (EncConv_Block_64x64): ConvBlockDown(
+        (conv0): Conv2dLayer()
+        (conv1): Conv2dLayer()
+      )
+      (EncConv_Block_32x32): ConvBlockDown(
+        (conv0): Conv2dLayer()
+        (conv1): Conv2dLayer()
+      )
+      (EncConv_Block_16x16): ConvBlockDown(
+        (conv0): Conv2dLayer()
+        (conv1): Conv2dLayer()
+      )
+    )
+    (to_square): FullyConnectedLayer()
+    (to_style): ToStyle(
+      (conv): Sequential(
+        (0): Conv2dLayer()
+        (1): Conv2dLayer()
+        (2): Conv2dLayer()
+      )
+      (pool): AdaptiveAvgPool2d(output_size=1)
+      (fc): FullyConnectedLayer()
+    )
+    (dec): Decoder(
+      (Dec_16x16): DecBlockFirstV2(
+        (conv0): Conv2dLayer()
+        (conv1): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (toRGB): ToRGB(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+      )
+      (Dec_32x32): DecBlock(
+        (conv0): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (conv1): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (toRGB): ToRGB(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+      )
+      (Dec_64x64): DecBlock(
+        (conv0): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (conv1): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (toRGB): ToRGB(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+      )
+      (Dec_128x128): DecBlock(
+        (conv0): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (conv1): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (toRGB): ToRGB(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+      )
+      (Dec_256x256): DecBlock(
+        (conv0): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (conv1): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (toRGB): ToRGB(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+      )
+      (Dec_512x512): DecBlock(
+        (conv0): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (conv1): StyleConv(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+        (toRGB): ToRGB(
+          (conv): ModulatedConv2d(
+            (affine): FullyConnectedLayer()
+          )
+        )
+      )
+    )
+  )
+  (mapping): MappingNet(
+    (fc0): FullyConnectedLayer()
+    (fc1): FullyConnectedLayer()
+    (fc2): FullyConnectedLayer()
+    (fc3): FullyConnectedLayer()
+    (fc4): FullyConnectedLayer()
+    (fc5): FullyConnectedLayer()
+    (fc6): FullyConnectedLayer()
+    (fc7): FullyConnectedLayer()
+  )
+)

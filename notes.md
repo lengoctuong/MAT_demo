@@ -1,9 +1,3 @@
-**Env torch+cuda**
-
-```bash
-conda install pytorch torchvision cudatoolkit -c pytorch
-``````
-
 **Changed Code**
 
 - ```generate_image.py```
@@ -90,5 +84,20 @@ Paper:
     - Model sẽ khó nhận thức được đối tượng ngoài khuôn mặt (như: kính, tay,...) vì vậy phục hồi gây ra kết quả tệ.
     - Khuôn mặt quá to hoặc nhỏ, nghiêng, xoay so với khung hình khó phục hồi hơn khuôn mặt ở vị trí chuẩn.
 
-**Some problem**
+**Some problem (MAT)**
 - metrics/metric_main/fid2993_full (Evaluating metrics...) vs evaluation/cal_fid_pids_uids
+
+**Some problem (after adding YOLO)**
+- yolo bi overfitting
+- gay thay doi input
+    - anh huong den "head-conv"
+    - anh huong den "mask updating"
+    - anh huong den "conv-u-net"
+
+**Coding**
+- changed code (head-conv):
+    - class[ImageFolderMaskDataset]::func[__getitem__] : prediction detect tren img va mask tai idx (tu input) va tra ve
+    - class[FirstStage]::func[forward] : nhan them input detect hoac stacking kenh vao img
+    - class[FirstStage]::func[__init__] : self.conv_first duoc khoi tao voi so channel tang them (tu detect)
+- changed code (mask updating)
+- changed code (conv-u-net)
